@@ -1,0 +1,10 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build artifacts
+bookmarklet-minify.js
+
+# IDE specific files
+.vscode/
+.idea/
