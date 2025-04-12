@@ -260,8 +260,70 @@
                 if (uiContainer) {
                     uiContainer.remove();
                     console.log("Cleanup complete: UI container removed.");
+                    // Start print process after UI cleanup
+                    performPrint();
                 }
             }, 3000);
+        }
+    };
+
+    // Print function to execute after cleanup
+    const performPrint = () => {
+        console.log("Starting print process...");
+        
+        try {
+            // 1. Find and click the print button
+            const printButton = Array.from(document.querySelectorAll('button[aria-label="Print"]')).find(btn => 
+                btn.querySelector('svg') && btn.className.includes('tapestry-react-services')
+            );
+            
+            if (!printButton) {
+                console.error("Print button not found");
+                return;
+            }
+            
+            console.log("Clicking print button...");
+            printButton.click();
+            
+            // 2. Wait for the print dialog to appear and check dropdown option
+            setTimeout(() => {
+                const dropdown = document.querySelector('.tapestry-react-services-19sym4c');
+                if (!dropdown || !dropdown.textContent.includes("Who sings what? v3")) {
+                    console.error("Correct dropdown option not found");
+                    return;
+                }
+                
+                // 3. Find and click the Web Page button
+                const webPageButton = Array.from(document.querySelectorAll('.tapestry-react-services-1oldudx')).find(btn => 
+                    btn.textContent.includes("Web Page")
+                );
+                
+                if (!webPageButton) {
+                    console.error("Web Page button not found");
+                    return;
+                }
+                
+                console.log("Clicking Web Page button...");
+                webPageButton.click();
+                
+                // 4. Wait a moment and click the Submit button
+                setTimeout(() => {
+                    const submitButton = Array.from(document.querySelectorAll('.tapestry-react-services-1m30jjc')).find(btn => 
+                        btn.textContent.includes("Submit")
+                    );
+                    
+                    if (!submitButton) {
+                        console.error("Submit button not found");
+                        return;
+                    }
+                    
+                    console.log("Clicking Submit button...");
+                    submitButton.click();
+                    console.log("Print process completed");
+                }, 500);
+            }, 500);
+        } catch (err) {
+            console.error("Error in print process:", err);
         }
     };
 
