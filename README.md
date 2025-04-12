@@ -15,6 +15,7 @@ This utility helps Planning Center users quickly load historical service data by
 - 💾 **Remembers Settings** - Stores your preferred time range for future use
 - 🎨 **Modern UI** - Clean, responsive interface with status notifications
 - ⚡ **Optimized Performance** - Uses MutationObserver for efficient loading detection
+- 🖨️ **Automatic Printing** - Automatically triggers the "Who sings what? v3" web page view print after loading completes
 
 ## Usage
 
@@ -33,6 +34,7 @@ This utility helps Planning Center users quickly load historical service data by
 4. Click "Start Loading" to begin
 5. The tool will automatically load services until reaching your target date
 6. Use the "Stop Loading" button if you need to cancel
+7. Once loading completes, the tool will automatically print the "Who sings what? v3" web page report
 
 ## Technical Details
 
@@ -44,6 +46,7 @@ This tool is built as a self-contained JavaScript bookmarklet with no external d
 4. Using MutationObserver to efficiently detect when loading operations complete
 5. Tracking progress by monitoring loaded date ranges
 6. Providing visual feedback through a status interface
+7. Automating the print process by identifying and clicking relevant UI elements
 
 The code uses modern JavaScript features including:
 - MutationObserver API for real-time DOM change detection
