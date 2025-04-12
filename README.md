@@ -14,6 +14,7 @@ This utility helps Planning Center users quickly load historical service data by
 - 🛑 **Stop Anytime** - Cancel the loading process whenever needed
 - 💾 **Remembers Settings** - Stores your preferred time range for future use
 - 🎨 **Modern UI** - Clean, responsive interface with status notifications
+- ⚡ **Optimized Performance** - Uses MutationObserver for efficient loading detection
 
 ## Usage
 
@@ -40,10 +41,15 @@ This tool is built as a self-contained JavaScript bookmarklet with no external d
 1. Injecting custom CSS for the user interface
 2. Calculating the target date based on user input
 3. Finding and automating clicks on the "Load More" button
-4. Tracking progress by monitoring loaded date ranges
-5. Providing visual feedback through a status interface
+4. Using MutationObserver to efficiently detect when loading operations complete
+5. Tracking progress by monitoring loaded date ranges
+6. Providing visual feedback through a status interface
 
-The code is organized using modern JavaScript practices with a focus on maintainability and user experience.
+The code uses modern JavaScript features including:
+- MutationObserver API for real-time DOM change detection
+- Promises for asynchronous operations
+- ES6 classes for better organization
+- Modern CSS with animations and transitions
 
 ## Development
 
@@ -63,6 +69,14 @@ To rebuild the minified version:
    ```
 3. The minified file will be created as `bookmarklet-minify.js` in the project directory.
 4. Ensure the minified code is properly URI-encoded if needed for the bookmarklet.
+
+## Performance Improvements
+
+The latest version implements the MutationObserver API to replace the previous setTimeout-based approach. This provides:
+- More accurate detection of when loading operations complete
+- Faster response to DOM changes
+- Reduced CPU usage with event-based monitoring instead of polling
+- Better reliability across different network conditions
 
 ## Compatibility
 

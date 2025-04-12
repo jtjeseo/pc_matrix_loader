@@ -437,12 +437,31 @@
 
         // For tracking progress
         let earliestDateFound = null;
+        
+        // Create loading observer
+        const loadingObserver = new MutationObserver((mutations, observer) => {
+            // Check if loading indicator exists
+            const isLoading = !!document.querySelector(".tapestry-react-reset.tapestry-react-services-urpdis");
+            if (!isLoading) {
+                // Loading completed, continue with the next step
+                continueLoading();
+            }
+        });
+        
+        // Start observing the document body for the loading indicator
+        loadingObserver.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: false,
+            characterData: false
+        });
 
         // Recursive function to continue loading services until target date
         const continueLoading = () => {
             if (!controller.isActive) {
                 console.log("Loading stopped by user.");
                 ui.show("Loading stopped", "error");
+                loadingObserver.disconnect();
                 performCleanup();
                 return;
             }
@@ -472,27 +491,25 @@
                     // Click the add button to load more services
                     try {
                         addButton.click();
+                        ui.show("Loading more services...", "loading");
+                        // We don't need to call continueLoading here
+                        // The observer will call it when loading completes
                     } catch (err) {
                         console.error("Error clicking add button:", err);
+                        loadingObserver.disconnect();
+                        performCleanup();
                     }
-
-                    setTimeout(() => {
-                        if (document.querySelector(".tapestry-react-reset.tapestry-react-services-urpdis")) {
-                            // Wait for loading to complete
-                            setTimeout(continueLoading, 1000);
-                        } else {
-                            continueLoading();
-                        }
-                    }, 1000);
                 } else {
                     console.log("Reached target date or within acceptable range:", currentDateStr);
                     controller.isActive = false;
+                    loadingObserver.disconnect();
                     ui.updateProgress(100);
                     ui.show("Reached target date or within acceptable range", "success");
                     performCleanup();
                 }
             } else {
                 console.log("Target date element not found");
+                loadingObserver.disconnect();
                 performCleanup();
             }
         };
