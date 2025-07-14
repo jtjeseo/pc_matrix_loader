@@ -294,7 +294,7 @@
                 }
                 
                 // 3. Find and click the Web Page button
-                const webPageButton = Array.from(document.querySelectorAll('.tapestry-react-services-1oldudx')).find(btn => 
+                const webPageButton = Array.from(document.querySelectorAll('.tapestry-react-reset.tapestry-react-services-qxiunf')).find(btn => 
                     btn.textContent.includes("Web Page")
                 );
                 
@@ -308,7 +308,7 @@
                 
                 // 4. Wait a moment and click the Submit button
                 setTimeout(() => {
-                    const submitButton = Array.from(document.querySelectorAll('.tapestry-react-services-1m30jjc')).find(btn => 
+                    const submitButton = Array.from(document.querySelectorAll('.tapestry-react-reset.tapestry-react-services-18dhx0b')).find(btn => 
                         btn.textContent.includes("Submit")
                     );
                     
@@ -490,7 +490,7 @@
         console.log("Target date:", targetDateStr);
 
         // Find the add button
-        const addButton = document.querySelector(".tapestry-react-reset.tapestry-react-services-zvb3oh");
+        const addButton = document.querySelector(".tapestry-react-reset.tapestry-react-services-1kye4lg");
         if (!addButton) {
             console.log("Add button not found");
             performCleanup();
@@ -529,10 +529,44 @@
             }
 
             // Find date element
-            const dateElement = document.querySelectorAll(".tapestry-react-services-1fej2i1")[1];
+            const dateElement = document.querySelector(".tapestry-react-services-1yy5xt");
             if (dateElement) {
-                // Extract date from element
-                const currentDate = new Date(dateElement.innerText);
+                // Extract date from element - formats can be:
+                // "Jul 6 - Aug 10" (same year)
+                // "Jul 14, 2024 - Aug 10, 2025" (different years)
+                const dateText = dateElement.innerText;
+                console.log("Date element text:", dateText);
+                
+                // Try to match date with year first: "Jul 14, 2024" or "Jul 14, 2024 - Aug 10, 2025"
+                let startDateMatch = dateText.match(/^([A-Za-z]+\s+\d+),\s*(\d{4})/);
+                let currentDate;
+                
+                if (startDateMatch) {
+                    // Format: "Jul 14, 2024 - Aug 10, 2025"
+                    const startDateStr = startDateMatch[1];
+                    const year = parseInt(startDateMatch[2], 10);
+                    currentDate = new Date(`${startDateStr}, ${year}`);
+                } else {
+                    // Try to match date without year: "Jul 6 - Aug 10"
+                    startDateMatch = dateText.match(/^([A-Za-z]+\s+\d+)/);
+                    if (!startDateMatch) {
+                        console.log("Could not parse date from:", dateText);
+                        loadingObserver.disconnect();
+                        performCleanup();
+                        return;
+                    }
+                    
+                    const startDateStr = startDateMatch[1];
+                    const currentYear = new Date().getFullYear();
+                    currentDate = new Date(`${startDateStr}, ${currentYear}`);
+                    
+                    // If the parsed date is in the future, it's probably from the previous year
+                    const now = new Date();
+                    if (currentDate > now) {
+                        currentDate.setFullYear(currentYear - 1);
+                    }
+                }
+                
                 const currentDateStr = currentDate.toISOString().split("T")[0];
                 console.log("Checking date:", currentDateStr);
 
