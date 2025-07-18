@@ -50,11 +50,23 @@
             background: linear-gradient(145deg, #1f2937, #111827);
             color: #e5e7eb;
             padding: 2rem;
-            border-radius: 16px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.4), 0 0 20px rgba(79, 70, 229, 0.2);
-            width: 380px;
-            animation: pcc-slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6), 0 0 30px rgba(79, 70, 229, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+            width: 400px;
+            animation: pcc-slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid rgba(255,255,255,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pcc-modal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
         }
 
         .pcc-progress-bar {
@@ -62,35 +74,69 @@
             top: 0;
             left: 0;
             height: 4px;
-            background: linear-gradient(90deg, #4f46e5, #7c3aed, #db2777);
+            background: linear-gradient(90deg, #4f46e5, #7c3aed, #db2777, #f59e0b);
             background-size: 200% 100%;
-            animation: pcc-gradient-shift 2s ease infinite;
-            transition: width 0.3s ease;
+            animation: pcc-gradient-shift 3s ease infinite;
+            transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 100000;
             width: 0%;
-            box-shadow: 0 0 10px rgba(124, 58, 237, 0.7);
+            box-shadow: 0 0 15px rgba(124, 58, 237, 0.8), 0 0 30px rgba(79, 70, 229, 0.4);
+            border-radius: 0 0 2px 0;
+        }
+        
+        .pcc-progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3));
+            animation: pcc-shimmer 2s ease-in-out infinite;
         }
 
         .pcc-status-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 16px;
-            margin: 10px 0;
-            border-radius: 12px;
-            background: rgba(30, 41, 59, 0.8);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            gap: 15px;
+            padding: 18px 20px;
+            margin: 12px 0;
+            border-radius: 16px;
+            background: rgba(30, 41, 59, 0.9);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2), 0 4px 10px rgba(0,0,0,0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             transform: translateY(0);
             opacity: 1;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             border-left: 4px solid #4f46e5;
+            border: 1px solid rgba(255,255,255,0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pcc-status-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+        
+        .pcc-status-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3), 0 6px 15px rgba(0,0,0,0.15);
         }
 
         .pcc-status-item.exiting {
             opacity: 0;
-            transform: translateX(100%);
+            transform: translateY(-20px) scale(0.95);
+            max-height: 0;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
         }
 
         .pcc-status-icon {
@@ -105,34 +151,56 @@
         .pcc-stop-btn {
             background: linear-gradient(135deg, #dc2626, #991b1b);
             color: white !important;
-            padding: 12px 24px;
-            border-radius: 40px;
+            padding: 14px 28px;
+            border-radius: 50px;
             font-weight: 600;
+            font-size: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4), 0 2px 10px rgba(0,0,0,0.1);
             border: none;
             cursor: pointer;
-            margin-top: 12px;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            margin-top: 16px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pcc-stop-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .pcc-stop-btn:hover::before {
+            left: 100%;
         }
         
         .pcc-stop-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.5), 0 4px 15px rgba(0,0,0,0.2);
         }
         
         .pcc-stop-btn:active {
-            transform: translateY(1px);
-            box-shadow: 0 2px 10px rgba(220, 38, 38, 0.3);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4), 0 2px 8px rgba(0,0,0,0.15);
         }
         
         button.pcc-stop-btn[style*="background: #666"] {
             background: linear-gradient(135deg, #4b5563, #374151) !important;
-            box-shadow: 0 4px 15px rgba(75, 85, 99, 0.4);
+            box-shadow: 0 6px 20px rgba(75, 85, 99, 0.4), 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        button.pcc-stop-btn[style*="background: #666"]:hover {
+            box-shadow: 0 8px 25px rgba(75, 85, 99, 0.5), 0 4px 15px rgba(0,0,0,0.2);
         }
 
         @keyframes pcc-slideIn {
@@ -145,15 +213,20 @@
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
+        
+        @keyframes pcc-shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
 
         .pcc-spinner {
             animation: pcc-spin 1s linear infinite;
-            width: 18px;
-            height: 18px;
-            border: 3px solid rgba(255,255,255,0.15);
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.2);
             border-top-color: #fff;
             border-radius: 50%;
-            filter: drop-shadow(0 0 2px rgba(255,255,255,0.7));
+            filter: drop-shadow(0 0 4px rgba(255,255,255,0.8));
         }
 
         @keyframes pcc-spin {
@@ -163,21 +236,29 @@
         
         /* Custom form elements */
         #pcc-months-input {
-            background: rgba(17, 24, 39, 0.8);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(17, 24, 39, 0.9);
+            border: 1px solid rgba(255,255,255,0.15);
             color: #e5e7eb;
-            padding: 12px 16px;
-            border-radius: 8px;
-            font-size: 15px;
-            transition: all 0.2s ease;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.1);
             width: 100%;
+            position: relative;
         }
         
         #pcc-months-input:focus {
             outline: none;
             border-color: #6366f1;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1), 0 0 0 2px rgba(99, 102, 241, 0.25);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1), 0 0 0 3px rgba(99, 102, 241, 0.3), 0 1px 3px rgba(0,0,0,0.1);
+            transform: translateY(-1px);
+        }
+        
+        #pcc-months-input:hover {
+            border-color: rgba(255,255,255,0.25);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1), 0 2px 6px rgba(0,0,0,0.15);
         }
         
         /* Custom status styles */
@@ -189,23 +270,39 @@
         
         /* Modal title style */
         .pcc-modal h2 {
-            background: linear-gradient(90deg, #c084fc, #6366f1);
+            background: linear-gradient(135deg, #c084fc, #6366f1, #8b5cf6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             text-fill-color: transparent;
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem !important;
+            font-size: 1.75rem;
+            margin-bottom: 2rem !important;
             font-weight: 700;
+            text-align: center;
+            letter-spacing: -0.025em;
+            position: relative;
+        }
+        
+        .pcc-modal h2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+            border-radius: 1px;
         }
         
         /* Label styling */
         .pcc-modal label {
-            color: #94a3b8 !important;
-            font-size: 0.9rem;
-            margin-bottom: 0.75rem !important;
-            font-weight: 500;
+            color: #cbd5e1 !important;
+            font-size: 0.95rem;
+            margin-bottom: 1rem !important;
+            font-weight: 600;
             display: block;
+            letter-spacing: 0.025em;
         }
     `);
 
@@ -225,6 +322,11 @@
         @-webkit-keyframes pcc-slideIn {
             from { -webkit-transform: translateY(-30px); opacity: 0; }
             to { -webkit-transform: translateY(0); opacity: 1; }
+        }
+        
+        @-webkit-keyframes pcc-shimmer {
+            0% { -webkit-transform: translateX(-100%); }
+            100% { -webkit-transform: translateX(100%); }
         }
     `);
 
@@ -346,7 +448,7 @@
             
             modal.innerHTML = `
                 <h2>Service Loader Configuration</h2>
-                <div style="margin-bottom: 1.5rem;">
+                <div style="margin-bottom: 2rem;">
                     <label>
                         Months to Load Back
                     </label>
@@ -355,18 +457,23 @@
                                id="pcc-months-input" 
                                value="${storedMonths || 12}" 
                                min="1" 
-                               max="36">
+                               max="36"
+                               placeholder="12">
+                    </div>
+                    <div style="margin-top: 0.5rem; color: #94a3b8; font-size: 0.85rem;">
+                        Load services from the past 1-36 months
                     </div>
                 </div>
-                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                <div style="display: flex; gap: 16px; justify-content: flex-end;">
                     <button type="button" 
                             class="pcc-stop-btn" 
-                            style="background: #666;"
+                            style="background: linear-gradient(135deg, #4b5563, #374151); padding: 12px 24px; font-size: 13px;"
                             onclick="this.closest('.pcc-modal-overlay').remove()">
                         Cancel
                     </button>
                     <button type="button" 
                             class="pcc-stop-btn"
+                            style="background: linear-gradient(135deg, #059669, #047857); padding: 12px 24px; font-size: 13px;"
                             onclick="this.dispatchEvent(new Event('confirm', { bubbles: true }))">
                         Start Loading
                     </button>
@@ -399,11 +506,40 @@
             const container = document.createElement("div");
             container.style.cssText = `
                 position: fixed;
-                top: 60px;
-                right: 20px;
+                top: 80px;
+                right: 24px;
                 z-index: 100000;
-                width: 330px;
+                width: 350px;
+                max-height: 80vh;
+                overflow-y: auto;
+                overflow-x: hidden;
+                scrollbar-width: thin;
+                scrollbar-color: rgba(255,255,255,0.3) transparent;
             `;
+            
+            // Custom scrollbar styles
+            const scrollbarStyle = document.createElement("style");
+            scrollbarStyle.textContent = `
+                .pcc-container::-webkit-scrollbar {
+                    width: 6px;
+                }
+                .pcc-container::-webkit-scrollbar-track {
+                    background: transparent;
+                }
+                .pcc-container::-webkit-scrollbar-thumb {
+                    background: rgba(255,255,255,0.3);
+                    border-radius: 3px;
+                }
+                .pcc-container::-webkit-scrollbar-thumb:hover {
+                    background: rgba(255,255,255,0.5);
+                }
+                .pcc-container::-webkit-scrollbar-horizontal {
+                    display: none;
+                }
+            `;
+            document.head.appendChild(scrollbarStyle);
+            container.className = "pcc-container";
+            
             uiContainer.appendChild(container);
             return container;
         }
@@ -449,7 +585,7 @@
             setTimeout(() => {
                 notification.classList.add("exiting");
                 setTimeout(() => notification.remove(), 300);
-            }, 3000);
+            }, 1500);
         }
 
         updateProgress(percent) {

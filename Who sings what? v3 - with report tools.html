@@ -1,0 +1,39 @@
+<html>
+  <head>
+    <title>Who sings what? v3</title>
+    <style>
+      * { margin:0; padding:0; }
+      body { margin:0; padding:0; }
+
+      #print-btn {
+        background: hsl(88, 44%, 40%);
+        border-radius: 3px;
+        border-width: 0px;
+        color: rgb(255, 255, 255);
+        cursor: pointer;
+        font-size: 14px;
+        line-height: 32px;
+        min-height: 32px;
+        padding-left: 12px;
+        padding-right: 12px;
+        position: absolute;
+        right: 24px;
+        top: 24px;
+        user-select: none;
+        white-space: nowrap;
+      }
+      #print-btn:hover { background: hsl(88, 46%, 36%); }
+      #print-btn:active { background: hsl(88, 52%, 32%); }
+      #print-msg { display: none }
+      @media print {
+        html body * { display: none }
+        #print-msg { display: block }
+      }
+    </style>
+  </head>
+  <body>
+    <h1 id="print-msg">Please use the print button to print this report</h1>
+    <button id="print-btn" onclick="setTimeout(function() { document.getElementById('report-iframe').contentWindow.print() }, 250)" title="print">Print Report</button>
+    <iframe id="report-iframe" width=100% height=100% marginwidth=0 marginheight=0 frameborder=0 seamless sandbox="allow-same-origin allow-modals" src="https://services.planningcenteronline.com/report_templates/142473/report.html?category_names=&amp;margin=0.5in&amp;order_of_service_opened=false&amp;orientation=Portrait&amp;page_size=US-Letter&amp;plan_ids%5B%5D=73672725&amp;plan_ids%5B%5D=73672740&amp;plan_ids%5B%5D=73672819&amp;plan_ids%5B%5D=73828318&amp;plan_ids%5B%5D=73828378&amp;plan_ids%5B%5D=74308573&amp;plan_ids%5B%5D=74308583&amp;plan_ids%5B%5D=74308594&amp;plan_ids%5B%5D=74970573&amp;plan_ids%5B%5D=74970580&amp;plan_ids%5B%5D=74970593&amp;plan_ids%5B%5D=74970595&amp;plan_ids%5B%5D=74970605&amp;plan_ids%5B%5D=75038583&amp;plan_ids%5B%5D=75717238&amp;plan_ids%5B%5D=75815765&amp;plan_ids%5B%5D=75910403&amp;plan_ids%5B%5D=76002060&amp;plan_ids%5B%5D=76002062&amp;plan_ids%5B%5D=76002065&amp;plan_ids%5B%5D=76346379&amp;plan_ids%5B%5D=76346414&amp;plan_ids%5B%5D=76431728&amp;plan_ids%5B%5D=76796204&amp;plan_ids%5B%5D=76789536&amp;plan_ids%5B%5D=76796256&amp;plan_ids%5B%5D=76817833&amp;plan_ids%5B%5D=77408505&amp;plan_ids%5B%5D=77408507&amp;plan_ids%5B%5D=77408512&amp;plan_ids%5B%5D=77408515&amp;plan_ids%5B%5D=77497776&amp;plan_ids%5B%5D=78029961&amp;plan_ids%5B%5D=78029991&amp;plan_ids%5B%5D=78030017&amp;plan_ids%5B%5D=78153486&amp;plan_ids%5B%5D=78165460&amp;plan_ids%5B%5D=78165476&amp;plan_ids%5B%5D=79083984&amp;plan_ids%5B%5D=79084038&amp;plan_ids%5B%5D=79084042&amp;plan_ids%5B%5D=79084044&amp;plan_ids%5B%5D=79084048&amp;plan_ids%5B%5D=79084054&amp;plan_ids%5B%5D=79583442&amp;plan_ids%5B%5D=80079758&amp;plan_ids%5B%5D=80081445&amp;plan_ids%5B%5D=80081448&amp;plan_ids%5B%5D=80187031&amp;plan_ids%5B%5D=80855218&amp;plan_ids%5B%5D=80855220&amp;plan_ids%5B%5D=80855221&amp;plan_ids%5B%5D=81304584&amp;plan_ids%5B%5D=80855224&amp;plan_ids%5B%5D=81047129&amp;plan_ids%5B%5D=81556930&amp;plan_ids%5B%5D=81556950&amp;plan_ids%5B%5D=81556953&amp;plan_ids%5B%5D=81901485&amp;plan_notes_opened=false&amp;sandboxed=1" />
+  </body>
+</html>

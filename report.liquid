@@ -1,0 +1,321 @@
+{%- comment -%}
+  =============================================================================
+  PLANNING CENTER SERVICES - "WHO SINGS WHAT" REPORT
+  =============================================================================
+  This report analyzes service plans to track which singers performed which songs.
+  It looks for vocal assignments in note categories "Person" and "Vocals".
+  Data Flow:
+  1. Process and sort service plans by date
+  2. Extract singer assignments from song notes
+  3. Build master data structures for singers and song performances
+  4. Generate individual tables for each singer showing their song history
+{%- endcomment -%}
+
+{%- comment -%}
+  CONFIGURATION: Note categories that contain vocal assignments
+{%- endcomment -%}
+{% assign vocal_assignment_category_person = "Person" %}
+{% assign vocal_assignment_category_vocals = "Vocals" %}
+
+{%- comment -%}
+  STEP 1: PREPARE AND SORT SERVICE PLANS
+  Convert plan dates to formatted strings for sorting, then sort newest first
+{%- endcomment -%}
+{% for plan in plans %}
+  {% assign formatted_plan_date = plan.dates | date: "%B %d, %Y" %}
+  {% assign plan.planDate = formatted_plan_date %}
+{% endfor %}{% assign sorted_plans = plans | sort: 'planDate' | reverse %}
+
+{%- comment -%}
+  STEP 2: EXTRACT VOCAL ASSIGNMENTS FROM SERVICE PLANS
+  Build master data structures:
+  - all_song_performances: Each entry = "NormalizedSingers|SongTitle|Date|PlanID"
+  - unique_singers_list: Deduplicated list of all singers found
+  Singer name normalization:
+  - Replace "/" and "&" with "+" to handle multiple singers (e.g., "John/Mary" → "John+Mary")
+  - Trim whitespace for consistency
+{%- endcomment -%}
+{% assign all_song_performances = "" %}
+{% assign unique_singers_list = "" %}
+
+{% for plan in sorted_plans %}
+  {% assign plan_date = plan.dates | date: "%m/%d/%Y" %}
+
+  {% for service_item in plan.items %}
+    {% if service_item.item_type == "Song" %}
+
+      {% for note in service_item.notes %}
+        {% if note.category_name == vocal_assignment_category_person or note.category_name == vocal_assignment_category_vocals %}
+
+          {%- comment -%}
+            Normalize singer names: replace separators with "+" and trim spaces
+          {%- endcomment -%}
+        {% assign normalized_singers = note.note | replace: "/", "+" | replace: "&", "+" | strip %}
+
+          {%- comment -%}
+            Extract individual singers and add to unique singers list
+          {%- endcomment -%}
+          {% assign individual_singers = normalized_singers | split: "+" %}
+          {% for singer in individual_singers %}
+            {% assign clean_singer_name = singer | strip %}
+            {% unless unique_singers_list contains clean_singer_name %}
+              {% assign unique_singers_list = unique_singers_list | append: clean_singer_name | append: ";" %}
+            {% endunless %}
+          {% endfor %}
+
+          {%- comment -%}
+            Create song performance record: NormalizedSingers|SongTitle|Date|PlanID
+          {%- endcomment -%}
+          {% capture song_performance_record %}
+            {{ normalized_singers }}|{{ service_item.title }}|{{ plan_date }}|{{ plan.id }}
+          {% endcapture %}
+          {% assign all_song_performances = all_song_performances | append: song_performance_record | append: ";" %}
+
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  {% endfor %}{% endfor %}
+
+{%- comment -%}
+  STEP 3: PREPARE DATA FOR REPORT GENERATION
+  Convert concatenated strings to arrays and sort for optimal display
+{%- endcomment -%}
+{% assign song_performances_array = all_song_performances | split: ";" | compact %}{% assign singers_array = unique_singers_list | split: ";" | uniq | sort %}
+
+{%- comment -%}
+  Sort song performances by date (descending) - element index 2 contains the date
+{%- endcomment -%}
+{% assign song_performances_by_date = song_performances_array | sort: 2 | reverse %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Songs Sung by Each Singer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      /* Dark theme & mobile-first styling */
+      body {
+        background-color: #121212;
+        color: #e0e0e0;
+        font-family: Arial
+        , sans-serif;
+        margin: 0;
+        padding: 0;
+        -webkit-font-smoothing: antialiased;
+      }
+      .report-container {
+        margin: 20px;
+        padding: 20px;
+        background: #1e1e1e;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      }
+      h1,
+      h2 {
+        color: #e0e0e0;
+      }
+      p {
+        color: #ccc;
+      }
+      .controls {
+        margin: 20px 0;
+        padding: 10px;
+        background: #2a2a2a;
+        border-radius: 4px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      /* Flat, modern styling for inputs */
+      #search,
+      #singer-filter {
+        padding: 8px 10px;
+        border: 1px solid #444;
+        border-radius: 2px;
+        background: #222;
+        color: #e0e0e0;
+        font-size: 0.95em;
+        width: 100%;
+        max-width: 300px;
+      }
+      /* Remove extra chrome from the dropdown */
+      #singer-filter {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2210%22%20height%3D%226%22%20viewBox%3D%220%200%2010%206%22%20xmlns%3D%22http://www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M0%200l5%206l5-6H0z%22%20fill%3D%22%23e0e0e0%22/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 10px 6px;
+        max-width: 250px;
+      }
+      table.sortable-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        font-size: 0.9em;
+      }
+      th,
+      td {
+        border: 1px solid #444;
+        padding: 8px 10px;
+        text-align: left;
+      }
+      th {
+        background-color: #2c3e50;
+        color: #fff;
+      }
+      tr:nth-child(even) {
+        background-color: #2a2a2a;
+      }
+      tr:hover {
+        background-color: #333;
+      }
+      a.service-link {
+        color: #1a73e8;
+        text-decoration: none;
+      }
+      .no-results {
+        display: none;
+        padding: 20px;
+        text-align: center;
+        color: #aaa;
+      }
+      .singer-section {
+        margin-bottom: 40px;
+      }
+      @media only screen and (max-width: 600px) {
+        .controls {
+          flex-direction: column;
+        }
+        #search,
+        #singer-filter {
+          max-width: 100%;
+        }
+        .report-container {
+          margin: 10px;
+          padding: 10px;
+        }
+        table,
+        th,
+        td {
+          font-size: 0.85em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="report-container">
+      <h1>Songs Sung by Each Singer</h1>
+      <p>Report Date: {{ 'now' | date: '%B %d, %Y' }}</p>
+      <p>Report Generated By: {{ current_user.name }}</p>
+      <p>From: {{ sorted_plans.last.dates | date: '%B %d, %Y' }} to {{ sorted_plans.first.dates | date: '%B %d, %Y' }}</p>
+      <br>
+
+      {%- comment -%}
+        INTERACTIVE CONTROLS: Search and filter functionality
+      {%- endcomment -%}
+      <div class="controls">
+        <input
+          type="text"
+          id="search"
+          placeholder="Search singers or songs..."
+          aria-label="Search singers or songs">
+        <select id="singer-filter" aria-label="Filter by singer">
+          <option value="">All Singers</option>
+          {% for singer in singers_array %}
+            <option value="{{ singer | downcase }}">{{ singer }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div id="no-results" class="no-results">No matching results found.</div>
+
+      {%- comment -%}
+        STEP 4: GENERATE INDIVIDUAL SINGER TABLES
+        For each singer, create a table showing:
+        - All songs they've performed
+        - Dates of performance
+        - Frequency count for each song
+        - Links to original service plans
+        Logic: Check if singer's name appears in the normalized singers field
+        (using case-insensitive contains check)
+      {%- endcomment -%}
+      {% for current_singer in singers_array %}
+
+        {%- comment -%}
+          Build list of song performances for this specific singer
+        {%- endcomment -%}
+        {% assign singer_performances = "" %}
+          {% for performance in song_performances_by_date %}
+          {% assign performance_data = performance | split: "|" %}
+          {% assign normalized_singers_in_performance = performance_data[0] | strip | downcase %}
+          {% assign current_singer_normalized = current_singer | strip | downcase %}
+
+          {%- comment -%}
+            Check if current singer participated in this performance
+          {%- endcomment -%}
+          {% if normalized_singers_in_performance contains current_singer_normalized %}
+            {% assign singer_performances = singer_performances | append: performance_data[0] | append: "|" | append: performance_data[1] | append: "|" | append: performance_data[2] | append: "|" | append: performance_data[3] | append: ";" %}
+          {% endif %}
+        {% endfor %}
+
+        {% assign singer_performances_array = singer_performances | split: ";" | sort | reverse %}
+
+        {%- comment -%}
+          Only create a table if this singer has performed songs
+        {%- endcomment -%}
+        {% if singer_performances_array != empty %}
+          <div class="singer-section" data-singer="{{ current_singer | downcase }}">
+            <h2>{{ current_singer }}</h2>
+            <table class="sortable-table">
+              <thead>
+                <tr>
+                  <th>Singer</th>
+                  <th>Song</th>
+                  <th>Date</th>
+                  <th>Count</th>
+                  <th>Service Link</th>
+                </tr>
+              </thead>
+              <tbody>
+                {%- comment -%}
+                  STEP 4.1: Show ALL performances for this singer with correct song counts
+                  Each row represents one performance instance, but count shows total times they sang that song
+                {%- endcomment -%}
+                {% for performance in singer_performances_array %}
+                  {% assign performance_data = performance | split: "|" %}
+                {% assign current_song_title = performance_data[1] %}
+
+                  {%- comment -%}
+                    Count how many times this singer performed this specific song across all services
+                  {%- endcomment -%}
+                  {% assign song_count = 0 %}
+                  {% for count_performance in singer_performances_array %}
+                    {% assign count_performance_data = count_performance | split: "|" %}
+                    {% if count_performance_data[1] == current_song_title %}
+                      {% assign song_count = song_count | plus: 1 %}
+                    {% endif %}
+                  {% endfor %}
+
+                  <tr>
+                    <td>{{ performance_data[0] }}</td>
+                    <td>{{ performance_data[1] }}</td>
+                    <td>{{ performance_data[2] }}</td>
+                    <td data-count="{{ song_count }}">{{ song_count }}</td>
+                    <td>
+                      <a
+                        href="https://services.planningcenteronline.com/plans/{{ performance_data[3] }}"
+                        class="service-link"
+                        target="_blank">Plan</a>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </body>
+</html>

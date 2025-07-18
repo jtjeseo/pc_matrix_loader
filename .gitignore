@@ -9,3 +9,5 @@ bookmarklet-minify.js
 .vscode/
 .idea/
 Planning Center Services.html
+
+.env
